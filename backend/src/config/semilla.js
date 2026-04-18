@@ -70,6 +70,17 @@ async function poblarBaseDeDatos() {
     // -------------------------------------------------------
     console.log('👩‍💻 Insertando alumnas de prueba...')
 
+    // ---- Cuenta administradora ----
+    const ADMIN = { nombre: 'Administradora MMT', email: 'admin@mmt.cl', password: 'Admin2026!', carrera: 'Coordinación MMT' }
+    const hashAdmin = await bcrypt.hash(ADMIN.password, 10)
+    await pool.query(
+      `INSERT INTO alumnas (nombre, email, password_hash, carrera, rol, id_sede)
+       VALUES ($1, $2, $3, $4, 'ADMIN', $5)
+       ON CONFLICT (email) DO UPDATE SET rol = 'ADMIN', nombre = EXCLUDED.nombre`,
+      [ADMIN.nombre, ADMIN.email, hashAdmin, ADMIN.carrera, idSede]
+    )
+    console.log(`   ✓ Admin: ${ADMIN.email} / ${ADMIN.password}`)
+
     const ALUMNAS = [
       { nombre: 'Valentina Rojas',  email: 'v.rojas@mmt.cl',   password: 'test1234', carrera: 'Ing. en Computación e Informática' },
       { nombre: 'Camila Fuentes',   email: 'c.fuentes@mmt.cl',  password: 'test1234', carrera: 'Ing. en Computación e Informática' },
@@ -91,7 +102,7 @@ async function poblarBaseDeDatos() {
       idsAlumnas.push(rows[0].id)
     }
     console.log(`   ✓ ${ALUMNAS.length} alumnas insertadas`)
-    console.log('   📧 Email de prueba: v.rojas@mmt.cl | Contraseña: test1234')
+    console.log('   📧 Alumna de prueba: v.rojas@mmt.cl / test1234')
 
     // -------------------------------------------------------
     // MATERIALES DE PRUEBA
