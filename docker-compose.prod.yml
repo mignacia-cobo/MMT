@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - mmt_pgdata:/var/lib/postgresql/data
-      - ./backend/migrations:/docker-entrypoint-initdb.d   # corre migraciones al crear la BD
+      - ./migrations:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
@@ -22,23 +22,21 @@ services:
 
   # ---- Backend Express ----
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
+    image: ${DOCKERHUB_USER}/mmt-backend:${IMAGE_TAG:-latest}
     container_name: mmt_backend
     restart: unless-stopped
     ports:
       - "3001:3001"
     environment:
-      PORT:          3001
-      DB_HOST:       db
-      DB_PORT:       5432
-      DB_NAME:       ${DB_NAME}
-      DB_USER:       ${DB_USER}
-      DB_PASSWORD:   ${DB_PASSWORD}
-      JWT_SECRET:    ${JWT_SECRET}
-      FRONTEND_URL:  ${FRONTEND_URL}
-      NODE_ENV:      production
+      PORT:         3001
+      NODE_ENV:     production
+      DB_HOST:      db
+      DB_PORT:      5432
+      DB_NAME:      ${DB_NAME}
+      DB_USER:      ${DB_USER}
+      DB_PASSWORD:  ${DB_PASSWORD}
+      JWT_SECRET:   ${JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL}
     volumes:
       - mmt_uploads:/app/uploads
     depends_on:
@@ -49,11 +47,7 @@ services:
 
   # ---- Frontend React (Nginx) ----
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-      args:
-        VITE_API_URL: ${VITE_API_URL}
+    image: ${DOCKERHUB_USER}/mmt-frontend:${IMAGE_TAG:-latest}
     container_name: mmt_frontend
     restart: unless-stopped
     ports:
