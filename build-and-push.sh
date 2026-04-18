@@ -8,8 +8,10 @@
 set -e
 
 # ---- CONFIGURA ESTO ----
-DOCKERHUB_USER="TU_USUARIO_DOCKERHUB"   # ← tu usuario de hub.docker.com
-VITE_API_URL="http://64.176.11.46:3001" # URL pública del backend
+DOCKERHUB_USER="micobo"
+VITE_API_URL="http://64.176.11.46:3001"
+# El token se lee desde variable de entorno o se pide al ejecutar
+# Nunca escribas el token directamente aquí
 # -------------------------
 
 TAG="${1:-latest}"
@@ -26,7 +28,11 @@ echo -e "${NC}"
 
 # ---- Login a Docker Hub ----
 echo -e "${YELLOW}[1/4] Login Docker Hub...${NC}"
-docker login -u "$DOCKERHUB_USER"
+if [ -z "$DOCKERHUB_TOKEN" ]; then
+  echo "Ingresa tu Docker Hub Access Token:"
+  read -s DOCKERHUB_TOKEN
+fi
+echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USER" --password-stdin
 
 # ---- Build backend ----
 echo -e "${YELLOW}[2/4] Build backend → $BACKEND_IMAGE${NC}"
