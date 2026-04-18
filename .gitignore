@@ -1,0 +1,38 @@
+# ---- Dependencias ----
+node_modules/
+**/node_modules/
+
+# ---- Variables de entorno (NUNCA subir al repo) ----
+.env
+**/.env
+.env.local
+.env.*.local
+
+# ---- Archivos subidos por usuarias ----
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ---- Build de producción ----
+frontend/dist/
+frontend/build/
+
+# ---- Scripts de migración puntual (ya aplicados) ----
+backend/aplicar-migracion-*.js
+
+# ---- Sistema operativo ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Editores ----
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# ---- Logs ----
+*.log
+npm-debug.log*
+
+# ---- Claude Code interno ----
+.claude/

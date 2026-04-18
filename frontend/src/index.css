@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-gray-800 font-sans antialiased;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-12px) rotate(2deg); }
+  66%       { transform: translateY(-6px) rotate(-1deg); }
+}
+@keyframes floatDelay {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-8px) rotate(-2deg); }
+  66%       { transform: translateY(-16px) rotate(1deg); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1);   }
+}
+@keyframes progressBar {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+.animate-float       { animation: float 6s ease-in-out infinite; }
+.animate-float-delay { animation: floatDelay 8s ease-in-out infinite; }
+.animate-fade-up     { animation: fadeInUp 0.6s ease-out forwards; }
+.animate-fade-left   { animation: fadeInLeft 0.6s ease-out forwards; }
+.animate-scale-in    { animation: scaleIn 0.5s ease-out forwards; }
+.animate-gradient    { animation: gradientShift 8s ease infinite; background-size: 200% 200%; }
+.animate-progress    { animation: progressBar linear forwards; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+@layer components {
+  .btn-primary {
+    @apply bg-mmt-purple text-white px-5 py-2.5 rounded-xl font-semibold
+           hover:bg-mmt-purple-dark active:scale-95 transition-all duration-200 shadow-sm;
+  }
+  .btn-secondary {
+    @apply bg-mmt-celeste text-white px-5 py-2.5 rounded-xl font-semibold
+           hover:bg-mmt-celeste-dark active:scale-95 transition-all duration-200 shadow-sm;
+  }
+  .btn-outline {
+    @apply border-2 border-mmt-purple text-mmt-purple px-5 py-2.5 rounded-xl font-semibold
+           hover:bg-mmt-purple-50 active:scale-95 transition-all duration-200;
+  }
+  .input-field {
+    @apply w-full border border-gray-200 rounded-xl px-4 py-3 text-sm
+           focus:outline-none focus:ring-2 focus:ring-mmt-purple/30 focus:border-mmt-purple
+           placeholder:text-gray-400 transition-all duration-200;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-gray-100 p-6
+           hover:shadow-card-hover transition-all duration-300;
+  }
+  .badge-purple {
+    @apply inline-flex items-center gap-1 bg-mmt-purple-100 text-mmt-purple-dark
+           text-xs font-semibold px-3 py-1 rounded-full;
+  }
+  .badge-celeste {
+    @apply inline-flex items-center gap-1 bg-mmt-celeste-100 text-mmt-celeste-dark
+           text-xs font-semibold px-3 py-1 rounded-full;
+  }
+}
