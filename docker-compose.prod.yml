@@ -1,0 +1,72 @@
+services:
+
+  # ---- Base de datos PostgreSQL ----
+  db:
+    image: postgres:16-alpine
+    container_name: mmt_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${DB_NAME}
+      POSTGRES_USER:     ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mmt_pgdata:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d   # corre migraciones al crear la BD
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mmt_net
+
+  # ---- Backend Express ----
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: mmt_backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT:          3001
+      DB_HOST:       db
+      DB_PORT:       5432
+      DB_NAME:       ${DB_NAME}
+      DB_USER:       ${DB_USER}
+      DB_PASSWORD:   ${DB_PASSWORD}
+      JWT_SECRET:    ${JWT_SECRET}
+      FRONTEND_URL:  ${FRONTEND_URL}
+      NODE_ENV:      production
+    volumes:
+      - mmt_uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - mmt_net
+
+  # ---- Frontend React (Nginx) ----
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    container_name: mmt_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - mmt_net
+
+networks:
+  mmt_net:
+    driver: bridge
+
+volumes:
+  mmt_pgdata:
+  mmt_uploads:
